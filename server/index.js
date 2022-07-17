@@ -1,34 +1,16 @@
-import express from 'express'
-import path from 'path'
-import {fileURLToPath} from 'url';
+// server/index.js
+const path = require('path');
+const express = require('express');
 
-const __filename = fileURLToPath(import.meta.url);
-
-// 👇️ "/home/john/Desktop/javascript"
-const __dirname = path.dirname("./");
-
-const PORT = process.env.PORT || 3001
-
-const app = express()
-
-//app.use(express.static(path.resolve(__dirname, '../../build')));
+// Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
+// Handle GET requests to /api route
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
 
-app.get("/api",(req,res)=>{
-    res.json({message:"hello there my friend"})
-})
-
-//app.get('*', (req, res) => {
-//    res.sendFile(path.resolve(__dirname, '../../build', 'index.html'));
-//  });
-
+// All other GET requests not handled before will return our React app
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-  });
-
-app.listen(PORT, ()=>{
-    console.log(`Server listening on ${PORT}`)
-})
-
-
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
